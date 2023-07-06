@@ -2,12 +2,15 @@
   "name": "console-menu",
   "version": "1.0.0",
   "description": "A package used to build your own console app, allowing the user to navigate through nested menus, return to previous menus and issue commands.",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "scripts": {
     "start": "tsc && node dist/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "files": [
+    "dist/index.js"
+  ],
   "keywords": [],
   "author": "Brad Teague",
   "license": "ISC",
