@@ -4,6 +4,7 @@
   "description": "A package used to build your own console app, allowing the user to navigate through nested menus, return to previous menus and issue commands.",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "type": "module",
   "scripts": {
     "start": "tsc && node dist/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -16,5 +17,12 @@
   "license": "ISC",
   "devDependencies": {
     "typescript": "^5.1.6"
+  },
+  "dependencies": {
+    "@types/inquirer": "^9.0.3",
+    "@types/inquirer-autocomplete-prompt": "^3.0.0",
+    "chalk": "^5.3.0",
+    "inquirer": "^9.2.7",
+    "inquirer-autocomplete-prompt": "^3.0.0"
   }
 }
