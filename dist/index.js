@@ -1,72 +1,42 @@
-import inquirer from "inquirer";
-import chalk from "chalk";
-const exitCommand = {
-    type: "command",
-    command: () => {
-        process.exit();
-    },
-    title: "Exit",
+"use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
 };
-export default async function main(menu) {
-    while (true) {
-        await promptMenu(menu);
-    }
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const chalk_1 = __importDefault(require("chalk"));
+const Menu_1 = __importDefault(require("./Menu"));
+const Command_1 = __importDefault(require("./Command"));
+const InquirerAdaptor_1 = __importDefault(require("./InquirerAdaptor"));
+function main(menu) {
+    return __awaiter(this, void 0, void 0, function* () {
+        while (true) {
+            yield promptMenu(menu);
+        }
+    });
 }
-async function promptMenu(menu) {
-    const prompt = inquirer.createPromptModule();
-    const menuPrompt = prepareMenuPrompt(menu);
-    const { menu: res } = (await prompt(menuPrompt));
-    console.clear();
-    if (res.type === "menu") {
-        await promptMenu(res);
-        return;
-    }
-    if (res.type === "command") {
-        console.log(chalk.yellow.underline("\n" + res.title));
-        res.command();
-        console.log("\n");
-        await promptMenu(menu);
-    }
-}
-function createBackPrompt(menu) {
-    return { name: "Back", value: menu, prefix: undefined };
-}
-function prepareMenuPrompt(menu) {
-    // Give all the choices in the menu a reference to their parent menu: the menu provided to this function
-    const choicesWithParentReference = [...menu.choices].map(choice => ({
-        ...choice,
-        parentMenu: menu,
-    }));
-    // Provide exit navigation and separator formatting for improve UX
-    const rawChoices = [...choicesWithParentReference, new inquirer.Separator(), exitCommand];
-    // Turn choices from our own Menu | Command object to an object that Inquirer can use: {name: string, value: any}
-    const choices = rawChoices.map(prepareChoices);
-    // Create a back button if the menu contains a parent menu {name: "Back", value: Menu}
-    if (menu.parentMenu) {
-        choices.splice(-1, 0, createBackPrompt(menu.parentMenu));
-    }
-    const separator = chalk.magenta("---");
-    return {
-        name: "menu",
-        type: "list",
-        message: menu.title,
-        choices,
-        prefix: separator,
-        suffix: separator,
-    };
-}
-function prepareChoices(choice) {
-    if (choice instanceof inquirer.Separator) {
-        return choice;
-    }
-    if ("command" in choice) {
-        return {
-            name: choice.title,
-            value: choice,
-        };
-    }
-    return {
-        name: choice.title,
-        value: choice,
-    };
+exports.default = main;
+function promptMenu(menu) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const menuPrompt = new InquirerAdaptor_1.default(menu);
+        const selection = yield menuPrompt.promptUser();
+        if (selection instanceof Menu_1.default) {
+            yield promptMenu(selection);
+            return;
+        }
+        if (selection instanceof Command_1.default) {
+            console.log(chalk_1.default.yellow.underline("\n" + selection.title));
+            selection.run();
+            console.log("\n");
+            yield promptMenu(menu);
+        }
+    });
 }

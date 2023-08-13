@@ -1,15 +1,6 @@
-import inquirer from "inquirer";
-export declare type Menu = {
-    type: "menu";
-    title: string;
-    choices: Choice[];
-    parentMenu?: Menu;
-};
-export declare type Command = {
-    type: "command";
-    title: string;
-    command: () => void;
-};
-declare type Choice = Menu | Command | inquirer.Separator;
+import Menu from "./Menu";
+import Command from "./Command";
+import BackCommand from "./BackCommand";
+import Separator from "./Separator";
+export declare type Choice = Menu | Command | BackCommand | Separator;
 export default function main(menu: Menu): Promise<void>;
-export {};
